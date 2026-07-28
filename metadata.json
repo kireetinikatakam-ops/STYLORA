@@ -1,0 +1,6 @@
+{
+  "name": "STYLORA - AI-Powered 3D Fashion Startup",
+  "description": "Style Smarter. Spend Less. Dress Sustainably. Luxury AI fashion platform with 3D runway, Smart Closet, Virtual Try-On with Generative Fabric Simulation, Korean Color Analysis, Body Shape Analyzer, AI Style Score, Student Marketplace, and Sustainability Dashboard.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
