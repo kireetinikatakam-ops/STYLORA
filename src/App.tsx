@@ -175,7 +175,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0B10] text-slate-900 dark:text-white transition-colors duration-500 relative font-sans selection:bg-purple-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#FAF7FC] dark:bg-[#120F1D] text-slate-800 dark:text-purple-100 transition-colors duration-500 relative font-sans selection:bg-purple-200 selection:text-purple-900 overflow-x-hidden">
       
       {/* Sign In Gate (Shown before opening or when not authenticated / requested) */}
       {(isSignInGateOpen || !user) && (

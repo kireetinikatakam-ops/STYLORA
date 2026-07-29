@@ -63,29 +63,29 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 transition-all duration-300">
-      <nav className="backdrop-blur-xl bg-white/70 dark:bg-black/70 border border-purple-500/20 dark:border-purple-500/30 rounded-2xl px-4 py-2.5 shadow-2xl flex items-center justify-between gap-2">
+      <nav className="backdrop-blur-xl bg-white/85 dark:bg-[#1A1528]/85 border border-purple-200/70 dark:border-purple-500/30 rounded-2xl px-4 py-2.5 shadow-2xl shadow-purple-900/5 flex items-center justify-between gap-2">
         {/* Brand Logo */}
         <button
           onClick={() => onNavigate('hero')}
           className="flex items-center gap-2.5 group text-left focus:outline-none"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-purple-300 font-bold text-lg font-serif">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-400 via-pink-300 to-sky-300 p-0.5 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+            <div className="w-full h-full bg-[#161224] rounded-[10px] flex items-center justify-center text-purple-200 font-bold text-lg font-serif">
               S
             </div>
           </div>
           <div>
-            <span className="text-xl font-bold tracking-wider font-serif bg-gradient-to-r from-purple-700 via-purple-500 to-indigo-600 dark:from-purple-300 dark:via-purple-100 dark:to-indigo-300 bg-clip-text text-transparent">
+            <span className="text-xl font-bold tracking-wider font-serif bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-500 dark:from-purple-200 dark:via-pink-200 dark:to-sky-200 bg-clip-text text-transparent">
               STYLORA
             </span>
-            <span className="block text-[10px] tracking-widest text-purple-600/70 dark:text-purple-300/70 uppercase font-mono">
+            <span className="block text-[10px] tracking-widest text-purple-600/80 dark:text-purple-300/80 uppercase font-mono">
               AI Haute Couture
             </span>
           </div>
         </button>
 
         {/* Center Nav Links */}
-        <div className="hidden lg:flex items-center gap-1 bg-purple-950/10 dark:bg-purple-950/40 p-1 rounded-xl border border-purple-500/10">
+        <div className="hidden lg:flex items-center gap-1 bg-purple-100/60 dark:bg-purple-950/40 p-1 rounded-xl border border-purple-200/50 dark:border-purple-500/20">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeSection === item.id;
@@ -95,8 +95,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => onNavigate(item.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 font-semibold'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-white/50 dark:hover:bg-purple-900/30'
+                    ? 'bg-gradient-to-r from-purple-500 via-pink-400 to-indigo-500 text-white shadow-md shadow-purple-400/30 font-semibold'
+                    : 'text-slate-700 dark:text-purple-200 hover:text-purple-700 dark:hover:text-purple-100 hover:bg-white/70 dark:hover:bg-purple-900/40'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
