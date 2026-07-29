@@ -129,6 +129,60 @@ export const VirtualTryOn: React.FC = () => {
   const bodyFileInputRef = useRef<HTMLInputElement>(null);
   const outfitFileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sliderContainerRef = useRef<HTMLDivElement>(null);
+  const [isDraggingSlider, setIsDraggingSlider] = useState<boolean>(false);
+
+  // Drag handler for image comparison slider
+  const updateSliderPosFromEvent = (clientX: number) => {
+    if (!sliderContainerRef.current) return;
+    const rect = sliderContainerRef.current.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPos(percentage);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDraggingSlider(true);
+    updateSliderPosFromEvent(e.clientX);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length > 0) {
+      setIsDraggingSlider(true);
+      updateSliderPosFromEvent(e.touches[0].clientX);
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDraggingSlider) {
+        updateSliderPosFromEvent(e.clientX);
+      }
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDraggingSlider && e.touches.length > 0) {
+        updateSliderPosFromEvent(e.touches[0].clientX);
+      }
+    };
+    const handleMouseUp = () => {
+      if (isDraggingSlider) setIsDraggingSlider(false);
+    };
+
+    if (isDraggingSlider) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchend', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchend', handleMouseUp);
+    };
+  }, [isDraggingSlider]);
 
   // AI Outfit Generation States
   const [aiOutfitPrompt, setAiOutfitPrompt] = useState<string>('');
@@ -714,10 +768,15 @@ export const VirtualTryOn: React.FC = () => {
 
           {/* Right Column: Interactive Try-On Result View */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="relative h-[540px] rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl bg-slate-950 select-none group">
+            <div
+              ref={sliderContainerRef}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+              className="relative h-[540px] rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl bg-slate-950 select-none group cursor-ew-resize"
+            >
               
               {/* Before Layer (Original Body Photo) */}
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 pointer-events-none">
                 <img
                   src={currentBeforeImage}
                   alt="Original Body Photo"
@@ -731,7 +790,7 @@ export const VirtualTryOn: React.FC = () => {
 
               {/* After Layer (AI Try-On Fitted Image) */}
               <div
-                className="absolute inset-y-0 right-0 overflow-hidden transition-all"
+                className="absolute inset-y-0 right-0 overflow-hidden transition-all pointer-events-none"
                 style={{ width: `${100 - sliderPos}%` }}
               >
                 <img
@@ -752,22 +811,23 @@ export const VirtualTryOn: React.FC = () => {
 
               {/* Morph Split Slider Handle */}
               <div
-                className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-purple-400 via-pink-400 to-indigo-400 cursor-ew-resize shadow-2xl flex items-center justify-center z-20"
+                className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-purple-400 via-pink-400 to-indigo-400 cursor-ew-resize shadow-2xl flex items-center justify-center z-20 pointer-events-none"
                 style={{ left: `${sliderPos}%` }}
               >
-                <div className="w-9 h-9 rounded-full bg-slate-950 text-purple-300 border-2 border-purple-400 shadow-xl flex items-center justify-center text-xs font-bold">
+                <div className="w-10 h-10 rounded-full bg-slate-950 text-purple-300 border-2 border-purple-400 shadow-xl flex items-center justify-center text-xs font-bold pointer-events-auto cursor-ew-resize hover:scale-110 transition-transform">
                   ↔
                 </div>
               </div>
 
-              {/* Range Input Overlay */}
+              {/* Range Input Overlay Covering Whole Image Area */}
               <input
                 type="range"
                 min="0"
                 max="100"
                 value={sliderPos}
                 onChange={(e) => setSliderPos(Number(e.target.value))}
-                className="absolute inset-x-0 bottom-4 w-4/5 mx-auto opacity-0 cursor-ew-resize z-30"
+                aria-label="Before and After Try-On Comparison Slider"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
               />
 
               {/* Loading State Overlay */}
@@ -782,6 +842,71 @@ export const VirtualTryOn: React.FC = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Accessible Visible Slider Bar & Quick Position Buttons */}
+            <div className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border border-purple-500/20 rounded-2xl p-4 shadow-xl space-y-3">
+              <div className="flex items-center justify-between text-xs font-mono text-purple-700 dark:text-purple-300">
+                <span className="flex items-center gap-1 font-semibold">
+                  <Eye className="w-3.5 h-3.5 text-indigo-500" />
+                  Original Body
+                </span>
+                <span className="font-bold text-white bg-purple-600 px-3 py-0.5 rounded-full shadow-md">
+                  {Math.round(sliderPos)}% Split
+                </span>
+                <span className="flex items-center gap-1 font-semibold text-pink-500 dark:text-pink-300">
+                  AI Fitted Garment
+                  <Sparkles className="w-3.5 h-3.5" />
+                </span>
+              </div>
+
+              {/* Visible Range Slider Track */}
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={sliderPos}
+                onChange={(e) => setSliderPos(Number(e.target.value))}
+                aria-label="Comparison slider bar"
+                className="w-full h-2.5 bg-slate-200 dark:bg-purple-950 rounded-lg appearance-none cursor-pointer accent-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              />
+
+              {/* Quick Preset Buttons */}
+              <div className="flex items-center justify-between gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setSliderPos(100)}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-mono transition-all border ${
+                    sliderPos === 100
+                      ? 'bg-indigo-600 text-white border-indigo-400 font-bold shadow-md'
+                      : 'bg-slate-100 dark:bg-slate-950/60 text-slate-700 dark:text-purple-300 border-purple-500/20 hover:border-purple-400'
+                  }`}
+                >
+                  100% Original
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSliderPos(50)}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-mono transition-all border ${
+                    sliderPos === 50
+                      ? 'bg-purple-600 text-white border-purple-400 font-bold shadow-md'
+                      : 'bg-slate-100 dark:bg-slate-950/60 text-slate-700 dark:text-purple-300 border-purple-500/20 hover:border-purple-400'
+                  }`}
+                >
+                  50 / 50 Split
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSliderPos(0)}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-mono transition-all border ${
+                    sliderPos === 0
+                      ? 'bg-pink-600 text-white border-pink-400 font-bold shadow-md'
+                      : 'bg-slate-100 dark:bg-slate-950/60 text-slate-700 dark:text-purple-300 border-purple-500/20 hover:border-purple-400'
+                  }`}
+                >
+                  100% AI Fit
+                </button>
+              </div>
             </div>
 
             {/* AI Fit Analytics Card & Download / Save Options */}
