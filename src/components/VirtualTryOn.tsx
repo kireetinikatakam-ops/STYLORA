@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { FabricType } from '../types';
 import { FabricSimulationCanvas } from './3d/FabricSimulationCanvas';
+import defaultAiTryOnImage from '../assets/images/ai_tryon_after_1785306518895.jpg';
+import defaultUserBodyImage from '../assets/images/user_tryon_before_1785306534631.jpg';
 
 interface GarmentOption {
   id: string;
@@ -37,13 +39,13 @@ interface GarmentOption {
 const PRESET_GARMENTS: GarmentOption[] = [
   {
     id: 'g1',
-    name: 'Aetheria Lavender Silk Evening Dress',
+    name: 'Aetheria Blue Satin & Floral Silk Evening Set',
     category: 'Haute Couture',
-    material: '100% Mulberry Silk',
-    image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80',
-    tryOnResultImage: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1200&q=80',
-    price: 340,
-    color: '#B39DDB',
+    material: 'Mulberry Satin & Sheer Silk Organza',
+    image: defaultAiTryOnImage,
+    tryOnResultImage: defaultAiTryOnImage,
+    price: 380,
+    color: '#1E3A8A',
   },
   {
     id: 'g2',
@@ -80,9 +82,9 @@ const PRESET_GARMENTS: GarmentOption[] = [
 const PRESET_MODELS = [
   {
     id: 'm1',
-    name: 'Casual Street Studio',
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
-    desc: 'Full body natural lighting pose',
+    name: 'Studio Full-Body Pose (Uploaded)',
+    image: defaultUserBodyImage,
+    desc: 'Off-shoulder top & high-waisted wide trousers',
   },
   {
     id: 'm2',
